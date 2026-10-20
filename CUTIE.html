@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Pookie Gift — A Little World of Love 🎀🧸💗</title>
+    <!-- Google Fonts for playful handwritten & modern rounded look -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sacramento&family=Comfortaa:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for cute icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* ==========================================
+           POOKIE AESTHETIC CSS VARIABLES & RESET
+           ========================================== */
+        :root {
+            --bg-gradient-1: #ffb6c1;
+            --bg-gradient-2: #ffc0cb;
+            --bg-gradient-3: #e6e6fa;
+            --bg-gradient-4: #fff0f5;
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(255, 182, 193, 0.6);
+            --primary-pink: #ff69b4;
+            --dark-pink: #d81b60;
+            --soft-lavender: #d8bfd8;
+            --text-color: #5c4033;
+            --text-light: #8c6239;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(255, 105, 180, 0.25);
+            --font-main: 'Quicksand', sans-serif;
+            --font-cute: 'Comfortaa', cursive;
+            --font-hand: 'Sacramento', cursive;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3), var(--bg-gradient-4));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ==========================================
+           FLOATING BACKGROUND ELEMENTS (HEARTS & FLOWERS)
+           ========================================== */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .float-item {
+            position: absolute;
+            bottom: -50px;
+            font-size: 24px;
+            animation: floatUp 8s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.9;
+            }
+            90% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-105vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* ==========================================
+           AUDIO CONTROLLER
+           ========================================== */
+        .music-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-pink);
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-family: var(--font-cute);
+            font-size: 14px;
+            color: var(--dark-pink);
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.08);
+            background: var(--white);
+        }
+
+        /* ==========================================
+           CREATOR WATERMARK (BOTTOM CORNER)
+           ========================================== */
+        .creator-watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            font-family: var(--font-hand);
+            font-size: 24px;
+            color: var(--dark-pink);
+            background: rgba(255, 255, 255, 0.75);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+            pointer-events: none;
+            animation: pulseWatermark 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseWatermark {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        /* ==========================================
+           10-SECOND COUNTDOWN OVERLAY
+           ========================================== */
+        .countdown-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 240, 245, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .countdown-overlay.active {
+            display: flex;
+            animation: fadeInScreen 0.5s ease;
+        }
+
+        .timer-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 6px solid var(--primary-pink);
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-cute);
+            font-size: 52px;
+            font-weight: bold;
+            color: var(--dark-pink);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.4);
+            margin: 20px 0;
+            animation: pulseTimer 1s infinite alternate;
+        }
+
+        @keyframes pulseTimer {
+            from { transform: scale(1); }
+            to { transform: scale(1.08); }
+        }
+
+        /* ==========================================
+           MAIN CONTAINER & SCREENS (TRANSITION VIBE)
+           ========================================== */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 500px;
+            min-height: 590px;
+            margin: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 3px solid var(--card-border);
+            border-radius: 35px;
+            box-shadow: var(--shadow);
+            padding: 35px 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .container.screen-transition {
+            transform: scale(0.8) rotate(-3deg);
+            opacity: 0;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInScreen 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeInScreen {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ==========================================
+           SHARED COMPONENTS & TYPOGRAPHY
+           ========================================== */
+        h1 {
+            font-family: var(--font-cute);
+            font-size: 26px;
+            color: var(--dark-pink);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        p {
+            font-size: 16px;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .gif-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 18px auto;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+            border: 3px solid var(--white);
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .gif-container:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .gif-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pookie-btn {
+            background: linear-gradient(135deg, #ff69b4, #ff8da1);
+            color: var(--white);
+            font-family: var(--font-cute);
+            font-size: 16px;
+            font-weight: 700;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pookie-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.6);
+            background: linear-gradient(135deg, #ff50a4, #ff7990);
+        }
+
+        .pookie-btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        /* ==========================================
+           SCREEN 2: PASSCODE LOCK
+           ========================================== */
+        .passcode-dots {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-pink);
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .dot.filled {
+            background: var(--primary-pink);
+            transform: scale(1.2);
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 240px;
+            margin: 0 auto;
+        }
+
+        .key-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--card-border);
+            border-radius: 20px;
+            font-family: var(--font-cute);
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--dark-pink);
+            padding: 14px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .key-btn:hover {
+            background: var(--white);
+            transform: translateY(-2px);
+            border-color: var(--primary-pink);
+        }
+
+        .key-btn:active {
+            transform: scale(0.92);
+        }
+
+        .shake {
+            animation: shakeAnim 0.4s ease-in-out;
+        }
+
+        @keyframes shakeAnim {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        /* ==========================================
+           SCREEN 3: SURPRISE QUESTION BUTTONS
+           ========================================== */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 280px;
+            margin-top: 15px;
+        }
+
+        /* ==========================================
+           SCREEN 5: MYSTERY HEART GAME
+           ========================================== */
+        .mystery-cards {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .mystery-box {
+            background: var(--white);
+            border: 3px solid var(--primary-pink);
+            border-radius: 22px;
+            width: 95px;
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 15px rgba(255,105,180,0.2);
+        }
+
+        .mystery-box:hover {
+            transform: translateY(-8px) scale(1.08);
+            box-shadow: 0 12px 25px rgba(255,105,180,0.4);
+        }
+
+        .mystery-box i {
+            font-size: 36px;
+            color: var(--primary-pink);
+            margin-bottom: 6px;
+            animation: pulseIcon 1.5s infinite;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .mystery-result {
+            background: #fff0f5;
+            border: 2px dashed var(--primary-pink);
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: var(--font-cute);
+            font-size: 15px;
+            color: var(--dark-pink);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* ==========================================
+           SCREEN 6: MEMORIES GALLERY
+           ========================================== */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .polaroid {
+            background: var(--white);
+            padding: 10px 10px 25px 10px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transform: rotate(-2deg);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .polaroid:nth-child(even) {
+            transform: rotate(3deg);
+        }
+
+        .polaroid:hover {
+            transform: scale(1.06) rotate(0deg) !important;
+            z-index: 5;
+            box-shadow: 0 12px 25px rgba(255,105,180,0.3);
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .polaroid span {
+            font-family: var(--font-hand);
+            font-size: 20px;
+            color: var(--dark-pink);
+            display: block;
+            margin-top: 8px;
+        }
+
+        /* ==========================================
+           SCREEN 7: THE POOKIE LETTER
+           ========================================== */
+        .envelope-wrapper {
+            background: #ff8da1;
+            width: 220px;
+            height: 140px;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(255,105,180,0.3);
+            margin: 20px auto;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 110px solid transparent;
+            border-right: 110px solid transparent;
+            border-top: 80px solid #ff69b4;
+            transform-origin: top;
+            transition: transform 0.5s ease;
+        }
+
+        .envelope-wrapper.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .envelope-heart {
+            font-size: 32px;
+            color: var(--white);
+            z-index: 2;
+            animation: pulseIcon 1.2s infinite;
+        }
+
+        .letter-content {
+            background: #fffdf9;
+            border: 2px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: left;
+            max-height: 260px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            box-shadow: inset 0 0 15px rgba(255,182,193,0.15);
+            display: none;
+            width: 100%;
+        }
+
+        .letter-content.show {
+            display: block;
+            animation: fadeInScreen 0.6s ease;
+        }
+
+        .letter-content h3 {
+            font-family: var(--font-hand);
+            font-size: 28px;
+            color: var(--dark-pink);
+            margin-bottom: 8px;
+        }
+
+        /* ==========================================
+           SCREEN 9: BIRTHDAY CAKE & WISH
+           ========================================== */
+        .cake-area {
+            font-size: 70px;
+            cursor: pointer;
+            margin: 15px 0;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 10px 15px rgba(255,105,180,0.3));
+        }
+
+        .cake-area:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .wish-message {
+            background: #fff0f5;
+            border: 2px solid var(--primary-pink);
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--dark-pink);
+            font-weight: 600;
+            display: none;
+            animation: fadeInScreen 0.5s ease;
+        }
+
+        /* ==========================================
+           SCREEN 10: CUTEST MOMENT SHUTDOWN
+           ========================================== */
+        .shutdown-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a0f16, #2d132c, #4a154b);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            animation: fadeInScreen 1s ease forwards;
+            color: var(--white);
+        }
+
+        .shutdown-screen.active {
+            display: flex;
+        }
+
+        .memory-polaroid-epic {
+            background: var(--white);
+            padding: 15px 15px 35px 15px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.6);
+            transform: rotate(-3deg) scale(0.9);
+            animation: popUpMemory 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            max-width: 320px;
+            width: 100%;
+        }
+
+        @keyframes popUpMemory {
+            to {
+                transform: rotate(0deg) scale(1);
+            }
+        }
+
+        .memory-polaroid-epic img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .memory-polaroid-epic span {
+            font-family: var(--font-hand);
+            font-size: 30px;
+            color: var(--dark-pink);
+            display: block;
+            margin-top: 12px;
+        }
+
+        /* Custom scrollbar for letter */
+        .letter-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .letter-content::-webkit-scrollbar-thumb {
+            background: var(--primary-pink);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Background Elements (Hearts & Flowers) -->
+    <div class="floating-elements" id="floatingElements"></div>
+
+    <!-- Background Music Toggle Button -->
+    <button class="music-toggle" id="musicToggle" onclick="toggleMusic()">
+        <i class="fa-solid fa-music" id="musicIcon"></i> <span id="musicText">Play Music 🎶</span>
+    </button>
+
+    <!-- Creator Watermark (Bottom Corner) -->
+    <div class="creator-watermark">
+        created by Bipra 🎀
+    </div>
+
+    <!-- 10-Second Countdown Overlay -->
+    <div class="countdown-overlay" id="countdownOverlay">
+        <h1 style="font-size:24px;">Unlocking Your Pookie Surprise... 🎀</h1>
+        <p style="margin-bottom:0; font-size:15px; color:var(--dark-pink);">Get ready for magic in...</p>
+        <div class="timer-circle" id="timerCount">10</div>
+        <p style="font-size:14px; font-style:italic;">Hold on tight, cutie! 💖</p>
+    </div>
+
+    <!-- Background Audio Element -->
+    <audio id="bgAudio" loop>
+        <source src="https://www.image2url.com/r2/default/audio/1792482837683-9f251217-5a80-4606-af42-dd5a65c183f6.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Main Container -->
+    <div class="container" id="mainContainer">
+
+        <!-- SCREEN 1: Welcome Pookie -->
+        <div class="screen active" id="screen1">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Cute Hugging Teddy Bear GIF">
+            </div>
+            <h1>Hiii, Pookie! 🎀</h1>
+            <p>Someone made a tiny little surprise just for you, filled with infinite love and cuteness!</p>
+            <button class="pookie-btn" onclick="startOpeningCountdown()">Open My Gift 🎁</button>
+        </div>
+
+        <!-- SCREEN 2: Secret Passcode -->
+        <div class="screen" id="screen2">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="Cute Lock Teddy GIF">
+            </div>
+            <h1>Shhh... It's a Secret! 💗</h1>
+            <p>ENTER YOUR BIRTH YEAR</p>
+            <div class="passcode-dots" id="passcodeDots">
+                <div class="dot" id="dot0"></div>
+                <div class="dot" id="dot1"></div>
+                <div class="dot" id="dot2"></div>
+                <div class="dot" id="dot3"></div>
+            </div>
+            <div class="keypad">
+                <button class="key-btn" onclick="pressKey('1')">1</button>
+                <button class="key-btn" onclick="pressKey('2')">2</button>
+                <button class="key-btn" onclick="pressKey('3')">3</button>
+                <button class="key-btn" onclick="pressKey('4')">4</button>
+                <button class="key-btn" onclick="pressKey('5')">5</button>
+                <button class="key-btn" onclick="pressKey('6')">6</button>
+                <button class="key-btn" onclick="pressKey('7')">7</button>
+                <button class="key-btn" onclick="pressKey('8')">8</button>
+                <button class="key-btn" onclick="pressKey('9')">9</button>
+                <button class="key-btn" onclick="pressKey('C')"><i class="fa-solid fa-rotate-left"></i></button>
+                <button class="key-btn" onclick="pressKey('0')">0</button>
+                <button class="key-btn" onclick="pressKey('OK')"><i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Surprise Question -->
+        <div class="screen" id="screen3">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHFvYXZlNGxtMmNpbzRmODVyNG40bXIwcHowY253OGVpZDU2ZjA3dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Z9jh7tAeMzrjMGxAfQ/giphy.gif" alt="Excited Cute Animal GIF">
+            </div>
+            <h1>I Have Something Special for You! 🥹💕</h1>
+            <p>Are you ready for your ultimate pookie surprise?</p>
+            <div class="btn-group">
+                <button class="pookie-btn" onclick="nextScreen(4)" style="width:100%; justify-content:center;">YESSS! 💗</button>
+                <button class="pookie-btn" onclick="nextScreen(4)" style="width:100%; justify-content:center; background: linear-gradient(135deg, #d8bfd8, #dda0dd);">Of Course, Silly! 🧸</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: Cute GIF Celebration -->
+        <div class="screen" id="screen4">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGYyazRnaGJyOGNkY3JyOHpoZ2Z3MWc1cGszNmE3cXRiaW1uM3YxcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ehZBzuyIM17kThQntN/giphy.gif" alt="Happy Dancing Character GIF">
+            </div>
+            <h1>YAYYY! YOU'RE HERE! 🌸</h1>
+            <p>You deserve a million hugs, blooming flowers, and a billion tiny hearts!</p>
+            <button class="pookie-btn" onclick="nextScreen(5)">Let's Go, Pookie! 💌</button>
+        </div>
+
+        <!-- SCREEN 5: Mystery Heart Game -->
+        <div class="screen" id="screen5">
+            <h1>Pick Your Pookie Heart 💗</h1>
+            <p>Each heart has a little magical surprise waiting just for you!</p>
+            <div class="mystery-cards">
+                <div class="mystery-box" onclick="revealMystery(1)">
+                    <i class="fa-solid fa-seedling"></i>
+                    <span style="font-size:12px; font-weight:700; color:var(--dark-pink)">Flower 🌷</span>
+                </div>
+                <div class="mystery-box" onclick="revealMystery(2)">
+                    <i class="fa-solid fa-paw"></i>
+                    <span style="font-size:12px; font-weight:700; color:var(--dark-pink)">Hug 🧸</span>
+                </div>
+                <div class="mystery-box" onclick="revealMystery(3)">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <span style="font-size:12px; font-weight:700; color:var(--dark-pink)">Note 💌</span>
+                </div>
+            </div>
+            <div class="mystery-result" id="mysteryResult">
+                Tap any mystery box above to unlock its secret message! ✨
+            </div>
+            <button class="pookie-btn" id="nextBtn5" style="display:none; margin-top:15px;" onclick="nextScreen(6)">Continue Journey 🌸</button>
+        </div>
+
+        <!-- SCREEN 6: Memories Gallery -->
+        <div class="screen" id="screen6">
+            <h1>Little Things, Big Feelings 💌</h1>
+            <p>Precious snapshots of our happiest moments together!</p>
+            <div class="gallery-container">
+                <div class="polaroid">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=300&q=80" alt="Cute Memory 1">
+                    <span>Cutie Moments 🎀</span>
+                </div>
+                <div class="polaroid">
+                    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjFmbm5vMzZmOXY2ZHJoemttbno4eXZmaHFzYjU1MWIyZzA1cHdmeCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/39GAXpLVKvYRO/giphy.gif" alt="Cute Memory 2">
+                    <span>Sweet Memories 🌸</span>
+                </div>
+                <div class="polaroid">
+                    <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXZiZXJ5OHRvYmk0ZXNwMzJzNnQ3cWI3bHF1dG82Zzc5dTRwNWZ0YSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l1AsTZ4cjGwAweNK8/giphy.gif" alt="Cute Memory 3">
+                    <span>Little Adventures 🧸</span>
+                </div>
+                <div class="polaroid">
+                    <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2w0ZDh2c2tvd2pwZXJ4aGFnd2cxYWU0NzFkNGhseXQ3NHV4ZnI0YiZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/Z21HJj2kz9uBG/giphy.gif" alt="Cute Memory 4">
+                    <span>Our Favourite 💗</span>
+                </div>
+            </div>
+            <button class="pookie-btn" onclick="nextScreen(7)">Read My Letter ✉️</button>
+        </div>
+
+        <!-- SCREEN 7: The Pookie Letter -->
+        <div class="screen" id="screen7">
+            <h1>A Little Note for You 💌</h1>
+            <p>Tap the envelope below to open your personalized letter!</p>
+            
+            <div class="envelope-wrapper" id="envelope" onclick="openLetter()">
+                <div class="envelope-flap"></div>
+                <i class="fa-solid fa-heart envelope-heart"></i>
+            </div>
+
+            <div class="letter-content" id="letterContent">
+                <h3>Dear Pookie, ♡</h3>
+                <p>If I could wrap happiness into a tiny gift, I would give you the biggest box in the world. I hope you always find reasons to smile, little things to look forward to, and people who remind you how wonderful you are.</p>
+                <p>May your days be soft like clouds, your dreams bright like stars, and your heart full of beautiful memories. Never forget that you deserve kindness, joy, and all the lovely things life has to offer.</p>
+                <p>Sending you the biggest virtual hug! 🧸💕<br><strong>With lots of love,<br>Your Secret Gift Maker 🎀</strong></p>
+            </div>
+
+            <button class="pookie-btn" id="nextBtn7" style="display:none; margin-top:15px;" onclick="nextScreen(8)">One Last Surprise ✨</button>
+        </div>
+
+        <!-- SCREEN 8: One Last Surprise -->
+        <div class="screen" id="screen8">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGw4NTg0bmZpaGd0OWxjeTQyc24zMmg0ZmhuNTY4cjZnOWl6YXZ4aCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/8CNfWgUZsucFHBAShI/giphy.gif" alt="Magical Sparkle GIF">
+            </div>
+            <h1>Wait, Pookie! There's One More Thing... ✨</h1>
+            <p>Your grand celebration is right behind this magical door!</p>
+            <button class="pookie-btn" onclick="nextScreen(9)">Reveal Birthday Cake 🎂</button>
+        </div>
+
+        <!-- SCREEN 9: Birthday Cake and Final Wish -->
+        <div class="screen" id="screen9">
+            <h1>Make a Wish, Pookie! 🎂</h1>
+            <p>Close your eyes, make a heartfelt wish, and tap the cake!</p>
+            <div class="cake-area" onclick="triggerCakeWish()" title="Tap to make a wish!">
+                🎂
+            </div>
+            <div class="wish-message" id="wishMessage">
+                🎉 <strong>Happy Birthday, CUTIE! </strong><br>
+                May all your little wishes find their way to you. Keep smiling, keep dreaming, and never forget how extraordinarily special you are!
+            </div>
+            <button class="pookie-btn" id="replayBtn" style="display:none; margin-top:15px;" onclick="triggerCutestMomentShutdown()">The Ultimate Cutest Moment 🌟</button>
+        </div>
+
+    </div>
+
+    <!-- SCREEN 10: CUTEST MOMENT SHUTDOWN (Full Reveal Finale) -->
+    <div class="shutdown-screen" id="shutdownScreen">
+        <h1 style="color: #ffb6c1; font-family: var(--font-cute); margin-bottom: 20px;">The Cutest Moment In My Life... 🥹💗</h1>
+        <div class="memory-polaroid-epic">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2JzZm1xcnN6ejBxYmF6cTQzbmMxMGVmdzluMTJvZ3R1aHltZ2RjMyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/tDOcWrMtJnJW0T3tDn/giphy.gif" alt="The Cutest Moment">
+            <span>Forever My CUTIE ✨</span>
+        </div>
+        <p style="color: #ffc0cb; margin-top: 25px; font-size: 15px; font-style: italic;">(Every single second with you is pure magic. Thank you for existing.)</p>
+    </div>
+
+    <!-- ==========================================
+       JAVASCRIPT: INTERACTION, ANIMATION & FLOW
+       ========================================== -->
+    <script>
+        /* Customization Settings */
+        const CONFIG = {
+            passcode: "2009",
+            birthdayPerson: "CUTIE"
+        };
+
+        let currentPasscodeTyped = "";
+
+        // Floating Hearts & Flowers generator
+        function createFloatingItems() {
+            const container = document.getElementById('floatingElements');
+            const icons = ['💗', '🌷', '🎀', '🧸', '✨', '🌸', '💖', '💌'];
+            
+            setInterval(() => {
+                const item = document.createElement('div');
+                item.classList.add('float-item');
+                item.style.left = Math.random() * 100 + 'vw';
+                item.style.fontSize = (Math.floor(Math.random() * 14) + 18) + 'px';
+                item.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                item.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                container.appendChild(item);
+
+                setTimeout(() => {
+                    item.remove();
+                }, 8000);
+            }, 450);
+        }
+        createFloatingItems();
+
+        // 10-Second Opening Countdown Function
+        function startOpeningCountdown() {
+            const overlay = document.getElementById('countdownOverlay');
+            const timerEl = document.getElementById('timerCount');
+            let timeLeft = 10;
+
+            overlay.classList.add('active');
+            timerEl.innerText = timeLeft;
+
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    overlay.classList.remove('active');
+                    nextScreen(2); // Proceed to passcode screen
+                }
+            }, 1000);
+        }
+
+        // Screen Smooth Transition Vibe
+        function nextScreen(screenNum) {
+            const container = document.getElementById('mainContainer');
+            container.classList.add('screen-transition');
+
+            setTimeout(() => {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById('screen' + screenNum).classList.add('active');
+                container.classList.remove('screen-transition');
+
+                // Trigger confetti on celebratory screens
+                if (screenNum === 4 || screenNum === 9) {
+                    confetti({
+                        particleCount: 80,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#ff69b4', '#ffb6c1', '#dda0dd', '#ffffff']
+                    });
+                }
+            }, 300);
+        }
+
+        // Passcode Logic
+        function pressKey(val) {
+            if (val === 'C') {
+                currentPasscodeTyped = "";
+                updateDots();
+                return;
+            }
+
+            if (val === 'OK') {
+                verifyPasscode();
+                return;
+            }
+
+            if (currentPasscodeTyped.length < 4) {
+                currentPasscodeTyped += val;
+                updateDots();
+                
+                if (currentPasscodeTyped.length === 4) {
+                    setTimeout(verifyPasscode, 300);
+                }
+            }
+        }
+
+        function updateDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById('dot' + i);
+                if (i < currentPasscodeTyped.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            }
+        }
+
+        function verifyPasscode() {
+            if (currentPasscodeTyped === CONFIG.passcode) {
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+                nextScreen(3);
+            } else {
+                const screen2 = document.getElementById('screen2');
+                screen2.classList.add('shake');
+                setTimeout(() => screen2.classList.remove('shake'), 400);
+                currentPasscodeTyped = "";
+                updateDots();
+            }
+        }
+
+        // Mystery Heart Game
+        let mysteryOpened = false;
+        function revealMystery(type) {
+            const resultBox = document.getElementById('mysteryResult');
+            const messages = {
+                1: "🌷 You received a magical glowing tulip! May your days blossom with pure joy and beautiful smiles.",
+                2: "🧸 You unlocked a Giant Pookie Bear Hug! Wrapped tightly with cozy warmth and unconditional love.",
+                3: "💌 A Secret Love Note appeared: 'You are the absolute sweetest highlight of every single day!'"
+            };
+            resultBox.innerHTML = messages[type];
+            confetti({ particleCount: 30, spread: 40, origin: { y: 0.7 } });
+            
+            if (!mysteryOpened) {
+                mysteryOpened = true;
+                document.getElementById('nextBtn5').style.display = 'inline-flex';
+            }
+        }
+
+        // Letter Opening
+        function openLetter() {
+            const envelope = document.getElementById('envelope');
+            const letter = document.getElementById('letterContent');
+            const nextBtn = document.getElementById('nextBtn7');
+
+            envelope.classList.add('open');
+            setTimeout(() => {
+                envelope.style.display = 'none';
+                letter.classList.add('show');
+                nextBtn.style.display = 'inline-flex';
+                confetti({ particleCount: 40, spread: 50, origin: { y: 0.6 } });
+            }, 400);
+        }
+
+        // Birthday Cake Wish & Final Celebration
+        function triggerCakeWish() {
+            const msg = document.getElementById('wishMessage');
+            const replayBtn = document.getElementById('replayBtn');
+            
+            msg.style.display = 'block';
+            replayBtn.style.display = 'inline-flex';
+
+            // Grand multi-burst confetti celebration
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: ['#ff69b4', '#ffd700', '#ffb6c1'] }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: ['#ff69b4', '#e6e6fa', '#ff1493'] }));
+            }, 250);
+        }
+
+        // Shutdown and Show Ultimate Cutest Moment
+        function triggerCutestMomentShutdown() {
+            const mainContainer = document.getElementById('mainContainer');
+            mainContainer.style.transform = 'scale(0) rotate(180deg)';
+            mainContainer.style.opacity = '0';
+
+            setTimeout(() => {
+                mainContainer.style.display = 'none';
+                document.getElementById('shutdownScreen').classList.add('active');
+                
+                // Extra grand confetti explosion for final moment
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.5 },
+                    colors: ['#ff69b4', '#ffd700', '#ffffff', '#ffb6c1']
+                });
+            }, 400);
+        }
+
+        // Background Music Toggle
+        let isPlaying = false;
+        function toggleMusic() {
+            const audio = document.getElementById('bgAudio');
+            const icon = document.getElementById('musicIcon');
+            const text = document.getElementById('musicText');
+
+            if (!isPlaying) {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    icon.className = "fa-solid fa-volume-high";
+                    text.innerText = "Pause Music 🎵";
+                }).catch(e => {
+                    console.log("Audio autoplay restricted by browser interaction policy.");
+                });
+            } else {
+                audio.pause();
+                isPlaying = false;
+                icon.className = "fa-solid fa-music";
+                text.innerText = "Play Music 🎶";
+            }
+        }
+    </script>
+</body>
+</html>
